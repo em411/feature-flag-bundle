@@ -11,6 +11,8 @@ The feature is enabled if the value matches the expected one (mostly a boolean b
 > [!IMPORTANT]  
 > The purpose of this bundle is to allow you to test the code proposed in the PR.
 
+> **Symfony 4.4 / PHP 7.4 backport.** This is a fork of [ajgarlag/feature-flag-bundle](https://github.com/ajgarlag/feature-flag-bundle) refactored to run on Symfony 4.4 and PHP 7.4.
+
 ## 🚀 Getting Started
 
 Follow these steps to install and use the bundle in your Symfony application.
@@ -37,9 +39,9 @@ return [
 ];
 ```
 
-## ✨ Declaring features with attributes
+## ✨ Declaring features with annotations
 
-You can declare features using the `#[AsFeature]` attribute. This allows you to autoconfigure your features as services.
+You can declare features using the `@AsFeature` annotation. This allows you to autoconfigure your features as services.
 
 ### On a class
 
@@ -50,7 +52,9 @@ namespace App\Feature;
 
 use Ajgarlag\FeatureFlagBundle\Attribute\AsFeature;
 
-#[AsFeature('xmas')]
+/**
+ * @AsFeature("xmas")
+ */
 final class XmasFeature
 {
     public function __invoke(): bool
@@ -62,14 +66,16 @@ final class XmasFeature
 
 The feature will be named `xmas`. If you don't provide a name, the FQCN of the class will be used.
 
-You can also use the `method` property of the attribute to specify a method to call on the service.
+You can also use the `method` property of the annotation to specify a method to call on the service.
 
 ```php
 namespace App\Feature;
 
 use Ajgarlag\FeatureFlagBundle\Attribute\AsFeature;
 
-#[AsFeature('xmas', method: 'isXmas')]
+/**
+ * @AsFeature(name="xmas", method="isXmas")
+ */
 final class XmasFeature
 {
     public function isXmas(): bool
@@ -90,13 +96,18 @@ use Ajgarlag\FeatureFlagBundle\Attribute\AsFeature;
 
 final class FeatureService
 {
-    #[AsFeature('weekend')]
+    /**
+     * @AsFeature(name="weekend")
+     */
     public function isWeekend(): bool
     {
         return date('N') >= 6;
     }
 
-    #[AsFeature] // The feature will be named "App\Feature\FeatureService::isAnotherFeature"
+    /**
+     * @AsFeature
+     */
+    // The feature will be named "App\Feature\FeatureService::isAnotherFeature"
     public function isAnotherFeature(): bool
     {
         return true;
@@ -104,41 +115,27 @@ final class FeatureService
 }
 ```
 
-## 🗺️ Routing integration
+> **Note:** Unlike PHP 8 attributes, a Doctrine annotation cannot be repeated on the same class or method. To declare multiple features on one class, use the `ajgarlag.feature_flag.feature` service tag.
 
-The bundle provides two functions to use in route conditions: `feature_is_enabled` and `feature_get_value`.
+## Gating routes by a feature
 
-You can use them to enable or disable routes based on features.
-
-```php
-namespace App\Controller;
-
-use Symfony\Component\Routing\Attribute\Route;
-
-class SomeController
-{
-    #[Route('/some/path', condition: "feature_is_enabled('some_feature')")]
-    public function index()
-    {
-        // ...
-    }
-}
-```
-
-You can also use `feature_get_value` to check for a specific value.
+Symfony 4.4 cannot evaluate services inside route `condition` expressions, so
+route-level feature gating is done in the controller (or a `kernel.controller`
+listener). Inject `FeatureCheckerInterface` and throw a 404 when the feature is
+off:
 
 ```php
-namespace App\Controller;
+use Ajgarlag\FeatureFlagBundle\FeatureCheckerInterface;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use Symfony\Component\Routing\Attribute\Route;
+public function __construct(private FeatureCheckerInterface $featureChecker) {}
 
-class SomeController
+public function index(): Response
 {
-    #[Route('/some/path', condition: "feature_get_value('some_feature') == 'some_value'")]
-    public function index()
-    {
-        // ...
+    if (!$this->featureChecker->isEnabled('new_checkout')) {
+        throw new NotFoundHttpException();
     }
+    // ...
 }
 ```
 
