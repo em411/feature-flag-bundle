@@ -23,7 +23,7 @@ Open a command console, enter your project directory and execute the following c
 version of this bundle:
 
 ```bash
-composer require ajgarlag/feature-flag-bundle
+composer require em411/feature-flag-bundle
 ```
 
 ### Step 2: Enable the bundle (for non-Flex applications)

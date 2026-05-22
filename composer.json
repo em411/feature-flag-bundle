@@ -1,9 +1,9 @@
 {
-    "name": "ajgarlag/feature-flag-bundle",
+    "name": "em411/feature-flag-bundle",
     "type": "symfony-bundle",
     "description": "Provides a feature flag mechanism (Symfony 4.4 / PHP 7.4 backport)",
     "keywords": ["feature", "flag", "flags", "toggle", "ab test", "rollout", "canary", "blue green", "kill switch"],
-    "homepage": "https://github.com/ajgarlag/feature-flag-bundle",
+    "homepage": "https://github.com/em411/feature-flag-bundle",
     "license": "MIT",
     "authors": [
         {
@@ -52,7 +52,7 @@
     },
     "extra": {
         "branch-alias": {
-            "dev-symfony-4.4-php-7.4": "0.3.x-dev"
+            "dev-main": "1.0.x-dev"
         }
     }
 }
