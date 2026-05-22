@@ -21,9 +21,6 @@ final class FeatureFlagRuntime
         return $this->featureChecker->isEnabled($featureName);
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue(string $featureName)
     {
         return $this->featureChecker->getValue($featureName);

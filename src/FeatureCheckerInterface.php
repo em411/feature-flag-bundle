@@ -15,8 +15,5 @@ interface FeatureCheckerInterface
 {
     public function isEnabled(string $featureName): bool;
 
-    /**
-     * @return mixed
-     */
     public function getValue(string $featureName);
 }

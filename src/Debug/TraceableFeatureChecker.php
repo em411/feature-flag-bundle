@@ -39,14 +39,11 @@ final class TraceableFeatureChecker implements FeatureCheckerInterface
         return $isEnabled;
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue(string $featureName)
     {
         $value = $this->decorated->getValue($featureName);
 
-        $this->resolvedValues[$featureName] = $this->resolvedValues[$featureName] ?? [
+        $this->resolvedValues[$featureName] ??= [
             'status' => self::STATUS_RESOLVED,
             'value' => $value,
             'calls' => 0,

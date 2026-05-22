@@ -27,9 +27,6 @@ final class FeatureChecker implements FeatureCheckerInterface, ResetInterface
         return true === $this->getValue($featureName);
     }
 
-    /**
-     * @return mixed
-     */
     public function getValue(string $featureName)
     {
         if (\array_key_exists($featureName, $this->cache)) {

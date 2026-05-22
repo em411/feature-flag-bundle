@@ -24,7 +24,7 @@ final class ServiceProvider implements ProviderInterface
     private $features;
 
     /**
-     * @param ContainerInterface                          $locator  PSR-11 locator of feature services
+     * @param ContainerInterface                         $locator  PSR-11 locator of feature services
      * @param array<string, array{0: string, 1: string}> $features map of feature name => [serviceId, method]
      */
     public function __construct(ContainerInterface $locator, array $features = [])
