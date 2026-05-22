@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="ajgarlag.feature_flag.provider.in_memory" class="Ajgarlag\FeatureFlagBundle\Provider\ServiceProvider">
+            <!-- arguments (service locator + feature map) are set by FeatureFlagPass -->
+            <tag name="ajgarlag.feature_flag.provider"/>
+        </service>
+
+        <service id="ajgarlag.feature_flag.provider" class="Ajgarlag\FeatureFlagBundle\Provider\ChainProvider">
+            <argument type="tagged" tag="ajgarlag.feature_flag.provider"/>
+        </service>
+        <service id="Ajgarlag\FeatureFlagBundle\Provider\ProviderInterface" alias="ajgarlag.feature_flag.provider"/>
+
+        <service id="ajgarlag.feature_flag.feature_checker" class="Ajgarlag\FeatureFlagBundle\FeatureChecker">
+            <argument type="service" id="ajgarlag.feature_flag.provider"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+        <service id="Ajgarlag\FeatureFlagBundle\FeatureCheckerInterface" alias="ajgarlag.feature_flag.feature_checker"/>
+    </services>
+</container>

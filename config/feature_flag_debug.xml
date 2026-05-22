@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<container xmlns="http://symfony.com/schema/dic/services"
+           xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+           xsi:schemaLocation="http://symfony.com/schema/dic/services https://symfony.com/schema/dic/services/services-1.0.xsd">
+
+    <services>
+        <service id="debug.ajgarlag.feature_flag.feature_checker" class="Ajgarlag\FeatureFlagBundle\Debug\TraceableFeatureChecker"
+                 decorates="ajgarlag.feature_flag.feature_checker">
+            <argument type="service" id="debug.ajgarlag.feature_flag.feature_checker.inner"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+
+        <service id="ajgarlag.feature_flag.data_collector" class="Ajgarlag\FeatureFlagBundle\DataCollector\FeatureFlagDataCollector">
+            <argument type="service" id="ajgarlag.feature_flag.provider"/>
+            <argument type="service" id="debug.ajgarlag.feature_flag.feature_checker"/>
+            <tag name="data_collector" template="@FeatureFlag/Collector/feature_flag.html.twig" id="ajgarlag.feature_flag"/>
+            <tag name="kernel.reset" method="reset"/>
+        </service>
+    </services>
+</container>
