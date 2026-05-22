@@ -225,11 +225,11 @@ services:
         class: Unleash\Client\UnleashBuilder
         factory: ['Unleash\Client\UnleashBuilder', 'createForGitlab']
         calls:
-            - { method: withGitlabEnvironment, arguments: ['%env(GITLAB_ENVIRONMENT)%'], returns-clone: true }
-            - { method: withAppUrl, arguments: ['%env(GITLAB_URL)%'], returns-clone: true }
-            - { method: withInstanceId, arguments: ['%env(GITLAB_INSTANCE_ID)%'], returns-clone: true }
-            - { method: withHttpClient, arguments: ['@psr18.http_client'], returns-clone: true }
-            - { method: withCacheHandler, arguments: ['@gitlab.unleash_cache'], returns-clone: true }
+            - { method: withGitlabEnvironment, arguments: ['%env(GITLAB_ENVIRONMENT)%'], returns_clone: true }
+            - { method: withAppUrl, arguments: ['%env(GITLAB_URL)%'], returns_clone: true }
+            - { method: withInstanceId, arguments: ['%env(GITLAB_INSTANCE_ID)%'], returns_clone: true }
+            - { method: withHttpClient, arguments: ['@psr18.http_client'], returns_clone: true }
+            - { method: withCacheHandler, arguments: ['@gitlab.unleash_cache'], returns_clone: true }
 
     gitlab.client:
         class: Unleash\Client\Unleash
