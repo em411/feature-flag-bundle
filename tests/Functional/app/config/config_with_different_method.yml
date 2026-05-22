@@ -1,0 +1,9 @@
+framework:
+    secret: test
+
+services:
+    _defaults:
+        autoconfigure: true
+        public: false
+
+    Ajgarlag\FeatureFlagBundle\Tests\Fixtures\DifferentMethodFeature: ~

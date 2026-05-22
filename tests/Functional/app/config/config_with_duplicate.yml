@@ -1,0 +1,13 @@
+framework:
+    secret: test
+
+services:
+    _defaults:
+        autoconfigure: true
+        public: false
+
+    feature.first:
+        class: Ajgarlag\FeatureFlagBundle\Tests\Fixtures\ClassFeature
+
+    feature.second:
+        class: Ajgarlag\FeatureFlagBundle\Tests\Fixtures\ClassFeature
