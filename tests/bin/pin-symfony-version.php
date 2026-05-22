@@ -16,7 +16,9 @@ if ($composerContent === false) {
     throw new LogicException('Could not read composer.json file');
 }
 
-$updatedComposer = preg_replace('/"symfony\/(.*)": ".*"/', '"symfony/$1": "' . $newVersion . '"', $composerContent);
+// Pin all symfony/* packages that follow the main Symfony release versioning,
+// but skip symfony/service-contracts which uses its own independent version line (^1.x / ^2.x / ^3.x).
+$updatedComposer = preg_replace('/"symfony\/(?!service-contracts)(.*)": ".*"/', '"symfony/$1": "' . $newVersion . '"', $composerContent);
 
 if ($updatedComposer === null) {
     throw new LogicException('Failed to update composer.json content');
