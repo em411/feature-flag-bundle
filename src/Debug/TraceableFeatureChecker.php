@@ -12,12 +12,19 @@ final class TraceableFeatureChecker implements FeatureCheckerInterface
     public const STATUS_RESOLVED = 'resolved';
     public const STATUS_NOT_FOUND = 'not_found';
 
-    /** @var array<string, array{status: self::STATUS_*, value: mixed, calls: int}> */
-    private array $resolvedValues = [];
+    /**
+     * @var FeatureCheckerInterface
+     */
+    private $decorated;
 
-    public function __construct(
-        private readonly FeatureCheckerInterface $decorated,
-    ) {
+    /**
+     * @var array<string, array{status: string, value: mixed, calls: int}>
+     */
+    private $resolvedValues = [];
+
+    public function __construct(FeatureCheckerInterface $decorated)
+    {
+        $this->decorated = $decorated;
     }
 
     public function isEnabled(string $featureName): bool
@@ -32,11 +39,14 @@ final class TraceableFeatureChecker implements FeatureCheckerInterface
         return $isEnabled;
     }
 
-    public function getValue(string $featureName): mixed
+    /**
+     * @return mixed
+     */
+    public function getValue(string $featureName)
     {
         $value = $this->decorated->getValue($featureName);
 
-        $this->resolvedValues[$featureName] ??= [
+        $this->resolvedValues[$featureName] = $this->resolvedValues[$featureName] ?? [
             'status' => self::STATUS_RESOLVED,
             'value' => $value,
             'calls' => 0,
@@ -48,7 +58,7 @@ final class TraceableFeatureChecker implements FeatureCheckerInterface
     }
 
     /**
-     * @return array<string, mixed>
+     * @return array<string, array{status: string, value: mixed, calls: int}>
      */
     public function getResolvedValues(): array
     {

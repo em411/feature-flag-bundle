@@ -8,18 +8,27 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\DataCollector\DataCollector;
 use Symfony\Component\HttpKernel\DataCollector\LateDataCollectorInterface;
-use Symfony\Component\VarDumper\Cloner\Data;
 
 final class FeatureFlagDataCollector extends DataCollector implements LateDataCollectorInterface
 {
-    public function __construct(
-        private readonly ProviderInterface $provider,
-        private readonly TraceableFeatureChecker $featureChecker,
-    ) {
+    /**
+     * @var ProviderInterface
+     */
+    private $provider;
+
+    /**
+     * @var TraceableFeatureChecker
+     */
+    private $featureChecker;
+
+    public function __construct(ProviderInterface $provider, TraceableFeatureChecker $featureChecker)
+    {
+        $this->provider = $provider;
+        $this->featureChecker = $featureChecker;
         $this->reset();
     }
 
-    public function collect(Request $request, Response $response, ?\Throwable $exception = null): void
+    public function collect(Request $request, Response $response, \Throwable $exception = null): void
     {
     }
 
@@ -38,7 +47,7 @@ final class FeatureFlagDataCollector extends DataCollector implements LateDataCo
     }
 
     /**
-     * @return array<string, array{status: TraceableFeatureChecker::STATUS_*, value: Data, calls: int}>
+     * @return array<string, array{status: string, value: mixed, calls: int}>
      */
     public function getFeatures(): array
     {
