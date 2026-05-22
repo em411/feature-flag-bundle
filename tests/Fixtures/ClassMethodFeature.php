@@ -4,7 +4,9 @@ namespace Ajgarlag\FeatureFlagBundle\Tests\Fixtures;
 
 use Ajgarlag\FeatureFlagBundle\Attribute\AsFeature;
 
-#[AsFeature(method: 'resolve')]
+/**
+ * @AsFeature(method="resolve")
+ */
 class ClassMethodFeature
 {
     public function resolve(): bool

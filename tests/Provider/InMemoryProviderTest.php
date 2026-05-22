@@ -7,14 +7,17 @@ use PHPUnit\Framework\TestCase;
 
 class InMemoryProviderTest extends TestCase
 {
-    private InMemoryProvider $provider;
+    /**
+     * @var InMemoryProvider
+     */
+    private $provider;
 
     protected function setUp(): void
     {
         $this->provider = new InMemoryProvider([
-            'first' => static fn () => true,
-            'second' => static fn () => 42,
-            'exception' => static fn () => throw new \LogicException('Should not be called.'),
+            'first' => static function () { return true; },
+            'second' => static function () { return 42; },
+            'exception' => static function () { throw new \LogicException('Should not be called.'); },
         ]);
     }
 

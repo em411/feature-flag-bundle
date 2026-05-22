@@ -4,20 +4,22 @@ namespace Ajgarlag\FeatureFlagBundle\Tests;
 
 use Ajgarlag\FeatureFlagBundle\FeatureChecker;
 use Ajgarlag\FeatureFlagBundle\Provider\InMemoryProvider;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 class FeatureCheckerTest extends TestCase
 {
-    private FeatureChecker $featureChecker;
+    /**
+     * @var FeatureChecker
+     */
+    private $featureChecker;
 
     protected function setUp(): void
     {
         $this->featureChecker = new FeatureChecker(new InMemoryProvider([
-            'feature_true' => static fn () => true,
-            'feature_false' => static fn () => false,
-            'feature_integer' => static fn () => 42,
-            'feature_random' => static fn () => random_int(1, 42),
+            'feature_true' => static function () { return true; },
+            'feature_false' => static function () { return false; },
+            'feature_integer' => static function () { return 42; },
+            'feature_random' => static function () { return random_int(1, 42); },
         ]));
     }
 
@@ -37,7 +39,9 @@ class FeatureCheckerTest extends TestCase
         $this->assertFalse($this->featureChecker->getValue('unknown_feature'));
     }
 
-    #[DataProvider('provideIsEnabled')]
+    /**
+     * @dataProvider provideIsEnabled
+     */
     public function testIsEnabled(string $featureName, bool $expectedResult): void
     {
         $this->assertSame($expectedResult, $this->featureChecker->isEnabled($featureName));
