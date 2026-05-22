@@ -1,0 +1,16 @@
+framework:
+    secret: test
+
+services:
+    _defaults:
+        autoconfigure: true
+        public: false
+
+    Ajgarlag\FeatureFlagBundle\Tests\Fixtures\ClassFeature: ~
+    Ajgarlag\FeatureFlagBundle\Tests\Fixtures\ClassMethodFeature: ~
+    Ajgarlag\FeatureFlagBundle\Tests\Fixtures\MethodFeature: ~
+    Ajgarlag\FeatureFlagBundle\Tests\Fixtures\NamedFeature: ~
+
+    test.ajgarlag.feature_flag.feature_checker:
+        alias: ajgarlag.feature_flag.feature_checker
+        public: true

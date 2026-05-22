@@ -10,8 +10,8 @@ return (new PhpCsFixer\Config())
     ->setRules([
         '@Symfony' => true,
         '@Symfony:risky' => true,
-        '@PHP81Migration' => true,
-        'header_comment' => ['header' => '']
+        '@PHP74Migration' => true,
+        'header_comment' => ['header' => ''],
     ])
     ->setFinder($finder)
 ;

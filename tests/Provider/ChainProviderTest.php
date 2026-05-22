@@ -8,19 +8,22 @@ use PHPUnit\Framework\TestCase;
 
 class ChainProviderTest extends TestCase
 {
-    private ChainProvider $provider;
+    /**
+     * @var ChainProvider
+     */
+    private $provider;
 
     protected function setUp(): void
     {
         $this->provider = new ChainProvider([
             new InMemoryProvider([
-                'first' => static fn () => true,
+                'first' => static function () { return true; },
             ]),
             new InMemoryProvider([
-                'second' => static fn () => 42,
+                'second' => static function () { return 42; },
             ]),
             new InMemoryProvider([
-                'exception' => static fn () => throw new \LogicException('Should not be called.'),
+                'exception' => static function () { throw new \LogicException('Should not be called.'); },
             ]),
         ]);
     }

@@ -2,7 +2,7 @@
 
 namespace Ajgarlag\FeatureFlagBundle;
 
-use Symfony\Component\FeatureFlag\Provider\ProviderInterface;
+use Ajgarlag\FeatureFlagBundle\Provider\ProviderInterface;
 
 /**
  * Checks if a feature is enabled or retrieves its value.
@@ -15,5 +15,5 @@ interface FeatureCheckerInterface
 {
     public function isEnabled(string $featureName): bool;
 
-    public function getValue(string $featureName): mixed;
+    public function getValue(string $featureName);
 }
