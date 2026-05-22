@@ -1,7 +1,7 @@
 {
     "name": "ajgarlag/feature-flag-bundle",
     "type": "symfony-bundle",
-    "description": "Provides a feature flag mechanism",
+    "description": "Provides a feature flag mechanism (Symfony 4.4 / PHP 7.4 backport)",
     "keywords": ["feature", "flag", "flags", "toggle", "ab test", "rollout", "canary", "blue green", "kill switch"],
     "homepage": "https://github.com/ajgarlag/feature-flag-bundle",
     "license": "MIT",
@@ -21,18 +21,20 @@
         }
     ],
     "require": {
-        "php": ">=8.1",
-        "psr/container": "^1.1|^2.0"
+        "php": ">=7.4",
+        "doctrine/annotations": "^1.13",
+        "psr/container": "^1.0",
+        "symfony/config": "^4.4",
+        "symfony/dependency-injection": "^4.4",
+        "symfony/http-kernel": "^4.4"
     },
     "require-dev": {
-        "friendsofphp/php-cs-fixer": "^3.80",
-        "phpunit/phpunit": "^10.5|^11.5|^12.1",
-        "symfony/framework-bundle": "^6.4|^7.4|^8.0",
-        "symfony/http-kernel": "^6.4|^7.4|^8.0",
-        "symfony/phpunit-bridge": "^7.4|^8.0",
-        "symfony/twig-bundle": "^6.4|^7.4|^8.0",
-        "symfony/var-dumper": "^6.4|^7.4|^8.0",
-        "symfony/yaml": "^6.4|^7.4|^8.0",
+        "phpunit/phpunit": "^9.5",
+        "symfony/framework-bundle": "^4.4",
+        "symfony/phpunit-bridge": "^4.4",
+        "symfony/twig-bundle": "^4.4",
+        "symfony/var-dumper": "^4.4",
+        "symfony/yaml": "^4.4",
         "twig/twig": "^2.12|^3.0"
     },
     "autoload": {
@@ -42,16 +44,14 @@
         "psr-4": { "Ajgarlag\\FeatureFlagBundle\\Tests\\": "tests/" }
     },
     "minimum-stability": "dev",
+    "prefer-stable": true,
     "config": {
-        "preferred-install": {
-            "symfony/framework-bundle": "source",
-            "*": "dist"
-        },
+        "preferred-install": "dist",
         "sort-packages": true
     },
     "extra": {
         "branch-alias": {
-            "dev-main": "0.3.x-dev"
+            "dev-symfony-4.4-php-7.4": "0.3.x-dev"
         }
     }
 }
