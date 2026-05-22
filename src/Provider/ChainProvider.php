@@ -4,10 +4,17 @@ namespace Ajgarlag\FeatureFlagBundle\Provider;
 
 final class ChainProvider implements ProviderInterface
 {
-    public function __construct(
-        /** @var iterable<ProviderInterface> */
-        private readonly iterable $providers = [],
-    ) {
+    /**
+     * @var iterable<ProviderInterface>
+     */
+    private $providers;
+
+    /**
+     * @param iterable<ProviderInterface> $providers
+     */
+    public function __construct(iterable $providers = [])
+    {
+        $this->providers = $providers;
     }
 
     public function get(string $featureName): ?callable
