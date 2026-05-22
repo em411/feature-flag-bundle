@@ -45,7 +45,7 @@ You can declare features using the `@AsFeature` annotation. This allows you to a
 
 ### On a class
 
-You can use the attribute on an invokable class:
+You can use the annotation on an invokable class:
 
 ```php
 namespace App\Feature;
@@ -87,7 +87,7 @@ final class XmasFeature
 
 ### On a method
 
-You can also use the attribute on a method of a service. The method must be public.
+You can also use the annotation on a method of a service. The method must be public.
 
 ```php
 namespace App\Feature;
@@ -126,16 +126,25 @@ off:
 
 ```php
 use Ajgarlag\FeatureFlagBundle\FeatureCheckerInterface;
+use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-public function __construct(private FeatureCheckerInterface $featureChecker) {}
-
-public function index(): Response
+class CheckoutController
 {
-    if (!$this->featureChecker->isEnabled('new_checkout')) {
-        throw new NotFoundHttpException();
+    private $featureChecker;
+
+    public function __construct(FeatureCheckerInterface $featureChecker)
+    {
+        $this->featureChecker = $featureChecker;
     }
-    // ...
+
+    public function index(): Response
+    {
+        if (!$this->featureChecker->isEnabled('new_checkout')) {
+            throw new NotFoundHttpException();
+        }
+        // ...
+    }
 }
 ```
 
@@ -173,24 +182,24 @@ The `get` method must return a `callable` if the provider has the feature, or `n
 ```php
 namespace App\FeatureProvider;
 
+use Ajgarlag\FeatureFlagBundle\Provider\ProviderInterface;
 use App\Repository\FeatureAssignmentRepository;
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
-use Symfony\Component\FeatureFlag\Provider\ProviderInterface;
 
 final class DoctrineProvider implements ProviderInterface
 {
-    public function __construct(
-        private readonly FeatureAssignmentRepository $featureAssignmentRepository,
-    ) {
+    private $featureAssignmentRepository;
+
+    public function __construct(FeatureAssignmentRepository $featureAssignmentRepository)
+    {
+        $this->featureAssignmentRepository = $featureAssignmentRepository;
     }
 
     public function get(string $featureName): ?callable
     {
-        // Set context. Example: user identifier, IP, hostname, etc. 
+        // Set context. Example: user identifier, IP, hostname, etc.
         $context = [];
-        
-        return function () use ($featureName) {
+
+        return function () use ($featureName, $context) {
             return $this->featureAssignmentRepository->featureIsEnabled($featureName, $context);
         };
     }
@@ -204,63 +213,62 @@ final class DoctrineProvider implements ProviderInterface
 
 First, declare a service to interact with the [Unleash](https://www.getunleash.io/) API.
 
-```php
-// config/services.php
+```yaml
+# config/services.yaml
+services:
+    # A PSR-16 cache wrapping the "cache.unleash" pool, recommended to limit API calls.
+    gitlab.unleash_cache:
+        class: Symfony\Component\Cache\Psr16Cache
+        arguments: ['@cache.unleash']
 
-namespace Symfony\Component\DependencyInjection\Loader\Configurator;
+    gitlab.client_factory:
+        class: Unleash\Client\UnleashBuilder
+        factory: ['Unleash\Client\UnleashBuilder', 'createForGitlab']
+        calls:
+            - { method: withGitlabEnvironment, arguments: ['%env(GITLAB_ENVIRONMENT)%'], returns-clone: true }
+            - { method: withAppUrl, arguments: ['%env(GITLAB_URL)%'], returns-clone: true }
+            - { method: withInstanceId, arguments: ['%env(GITLAB_INSTANCE_ID)%'], returns-clone: true }
+            - { method: withHttpClient, arguments: ['@psr18.http_client'], returns-clone: true }
+            - { method: withCacheHandler, arguments: ['@gitlab.unleash_cache'], returns-clone: true }
 
-use Symfony\Component\Cache\Psr16Cache;
-use Unleash\Client\Unleash;
-use Unleash\Client\UnleashBuilder;
+    gitlab.client:
+        class: Unleash\Client\Unleash
+        factory: ['@gitlab.client_factory', 'build']
 
-return function(ContainerConfigurator $container): void {
-    
-    // Application service definition
-
-    $services->set('gitlab.client_factory')
-        ->class(UnleashBuilder::class)
-        ->factory([UnleashBuilder::class, 'createForGitlab'])
-        ->call('withGitlabEnvironment', [env('GITLAB_ENVIRONMENT')], true)
-        ->call('withAppUrl', [env('GITLAB_URL')], true)
-        ->call('withInstanceId', [env('GITLAB_INSTANCE_ID')], true)
-        ->call('withHttpClient', [service('psr18.http_client')], true)
-        // Using a cache is recommended to limit API calls (named "cache.unleash" in this example)
-        ->call('withCacheHandler', [inline_service(Psr16Cache::class)->args([service('cache.unleash')])], true)
-    ;
-
-    $services->set('gitlab.client')
-        ->class(Unleash::class)
-        ->factory([service('gitlab.client_factory'), 'build'])
-    ;
-};
+    App\FeatureProvider\GitlabProvider:
+        arguments:
+            $unleash: '@gitlab.client'
 ```
 
 ```php
 namespace App\FeatureProvider;
 
-use Symfony\Bundle\SecurityBundle\Security;
-use Symfony\Component\DependencyInjection\Attribute\Autowire;
-use Symfony\Component\FeatureFlag\Provider\ProviderInterface;
-use Unleash\Client\Configuration\Context;
+use Ajgarlag\FeatureFlagBundle\Provider\ProviderInterface;
+use Symfony\Component\Security\Core\Security;
 use Unleash\Client\Configuration\UnleashContext;
 use Unleash\Client\Unleash;
 
 class GitlabProvider implements ProviderInterface
 {
-    public function __construct(
-        #[Autowire(service: 'gitlab.client')] private readonly Unleash $unleash,
-        private readonly Security $security,
-    ) {
+    private $unleash;
+    private $security;
+
+    public function __construct(Unleash $unleash, Security $security)
+    {
+        $this->unleash = $unleash;
+        $this->security = $security;
     }
 
     public function get(string $featureName): ?callable
     {
-        // Set context. Example: user identifier, IP, hostname, etc. 
-        $context = new UnleashContext(
-            currentUserId: $this->security->getUser()?->getUserIdentifier()
-        );
-        
-        return fn () => $this->unleash->isEnabled($featureName, $context);
+        $user = $this->security->getUser();
+
+        // Set context. Example: user identifier, IP, hostname, etc.
+        $context = new UnleashContext($user ? $user->getUsername() : null);
+
+        return function () use ($featureName, $context) {
+            return $this->unleash->isEnabled($featureName, $context);
+        };
     }
 }
 ```
@@ -269,22 +277,17 @@ class GitlabProvider implements ProviderInterface
 
 ### Priority
 
-You can control the order of the providers in the chain using the `priority` attribute on the
+You can control the order of the providers in the chain using the `priority` attribute of the
 `ajgarlag.feature_flag.provider` tag.
 
-You can use the `#[AutoconfigureTag]` attribute to set the priority of your provider.
+Set the priority on the service tag in your configuration:
 
-```php
-namespace App\FeatureProvider;
-
-use Ajgarlag\FeatureFlagBundle\Provider\ProviderInterface;
-use Symfony\Component\DependencyInjection\Attribute\AutoconfigureTag;
-
-#[AutoconfigureTag('ajgarlag.feature_flag.provider', ['priority' => 10])]
-class MyProvider implements ProviderInterface
-{
-    // ...
-}
+```yaml
+# config/services.yaml
+services:
+    App\FeatureProvider\MyProvider:
+        tags:
+            - { name: 'ajgarlag.feature_flag.provider', priority: 10 }
 ```
 
 Providers with a higher priority will be checked first.
