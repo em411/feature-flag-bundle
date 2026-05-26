@@ -39,7 +39,7 @@ class FeatureFlagPass implements CompilerPassInterface
             foreach ($tags as $tag) {
                 $featureName = ($tag['feature'] ?? '') ?: $className;
                 if (\array_key_exists($featureName, $features)) {
-                    throw new RuntimeException(\sprintf('Feature "%s" already defined in the "ajgarlag.feature_flag.provider.in_memory" provider.', $featureName));
+                    throw new RuntimeException(\sprintf('Feature "%s" is already tagged on another service; feature names must be unique.', $featureName));
                 }
 
                 $method = $tag['method'] ?? '__invoke';

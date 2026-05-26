@@ -94,7 +94,7 @@ class FeatureFlagTest extends TestCase
     public function testFeatureFlagAssertionsWithDuplicate(): void
     {
         $this->expectException(RuntimeException::class);
-        $this->expectExceptionMessage('Feature "Ajgarlag\FeatureFlagBundle\Tests\Fixtures\ClassFeature" already defined in the "ajgarlag.feature_flag.provider.in_memory" provider.');
+        $this->expectExceptionMessage('Feature "Ajgarlag\FeatureFlagBundle\Tests\Fixtures\ClassFeature" is already tagged on another service; feature names must be unique.');
 
         $this->bootContainer('config_with_duplicate.yml');
     }
