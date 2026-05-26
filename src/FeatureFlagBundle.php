@@ -15,4 +15,9 @@ class FeatureFlagBundle extends Bundle
 
         $container->addCompilerPass(new FeatureFlagPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION, 1);
     }
+
+    public function getPath(): string
+    {
+        return \dirname(__DIR__);
+    }
 }
