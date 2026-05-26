@@ -5,6 +5,14 @@ All notable changes to `em411/feature-flag-bundle` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.5] - 2026-05-26
+
+### Changed
+- CI: bumped `actions/checkout` v4 → v6 and `actions/cache` v4 → v5 to run on
+  Node.js 24. GitHub deprecated Node.js 20 for Actions; the older versions
+  emitted deprecation warnings on every run and will stop working in
+  September 2026. No effect on the published package.
+
 ## [1.0.4] - 2026-05-26
 
 ### Fixed
