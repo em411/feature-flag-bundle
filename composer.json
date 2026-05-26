@@ -46,7 +46,7 @@
         "symfony/twig-bundle": "^4.4",
         "symfony/var-dumper": "^4.4",
         "symfony/yaml": "^4.4",
-        "twig/twig": "^2.12|^3.0"
+        "twig/twig": "^2.12 | >=3.0,<3.7"
     },
     "autoload": {
         "psr-4": { "Ajgarlag\\FeatureFlagBundle\\": "src/" }
@@ -58,7 +58,10 @@
     "prefer-stable": true,
     "config": {
         "preferred-install": "dist",
-        "sort-packages": true
+        "sort-packages": true,
+        "audit": {
+            "block-insecure": false
+        }
     },
     "extra": {
         "branch-alias": {

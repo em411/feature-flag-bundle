@@ -5,6 +5,20 @@ All notable changes to `em411/feature-flag-bundle` are documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.0.4] - 2026-05-26
+
+### Fixed
+- CI: composer dependency resolution failed against the latest packages because
+  Symfony 4.4 and Twig 2.x carry security advisories that newer Composer
+  versions now block by default. Set `config.audit.block-insecure: false` —
+  Symfony 4.4 is EOL upstream and users on this backport already accept the
+  EOL security posture. Advisories are still reported on install, just not
+  blocking.
+- CI: `twig/twig 3.26.0` was released with a PHP 8.1+ requirement, breaking the
+  PHP 8.0 leg of the matrix. Capped the require-dev constraint to
+  `^2.12 | >=3.0,<3.7` so CI picks a version compatible with both PHP 7.4 and
+  PHP 8.0. End users are unaffected (Twig is not in `require`).
+
 ## [1.0.3] - 2026-05-26
 
 First Packagist release. Pre-launch polish on top of `1.0.2`.
