@@ -2,3 +2,6 @@ vendor/
 *.cache
 composer.lock
 phpunit.xml
+.idea/
+.vscode/
+.DS_Store

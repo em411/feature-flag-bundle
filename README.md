@@ -1,5 +1,9 @@
 # FeatureFlag Bundle
 
+[![CI](https://github.com/em411/feature-flag-bundle/actions/workflows/ci.yml/badge.svg)](https://github.com/em411/feature-flag-bundle/actions/workflows/ci.yml)
+[![Latest Stable Version](https://poser.pugx.org/em411/feature-flag-bundle/v)](https://packagist.org/packages/em411/feature-flag-bundle)
+[![License](https://poser.pugx.org/em411/feature-flag-bundle/license)](https://packagist.org/packages/em411/feature-flag-bundle)
+
 The FeatureFlag Bundle allows you to split the code execution flow by enabling features depending on context.
 
 It provides a service that checks if a feature is enabled. Each feature is defined by a callable function that returns a
@@ -8,10 +12,14 @@ The feature is enabled if the value matches the expected one (mostly a boolean b
 
 **This bundle code has been borrowed from https://github.com/symfony/symfony/pull/53213**.
 
-> [!IMPORTANT]  
-> The purpose of this bundle is to allow you to test the code proposed in the PR.
-
 > **Symfony 4.4 / PHP 7.4 backport.** This is a fork of [ajgarlag/feature-flag-bundle](https://github.com/ajgarlag/feature-flag-bundle) refactored to run on Symfony 4.4 and PHP 7.4.
+
+## Which package should I use?
+
+- **Running Symfony 6+ / PHP 8.1+?** Use the upstream [`ajgarlag/feature-flag-bundle`](https://github.com/ajgarlag/feature-flag-bundle) — it targets modern Symfony and uses native PHP 8 attributes.
+- **Stuck on Symfony 4.4 / PHP 7.4?** Use this fork. It exists because the upstream cannot run on legacy stacks. The public API is intentionally kept compatible with the upstream so migration is a namespace-free drop-in.
+
+> **Note on the namespace.** The Composer package is `em411/feature-flag-bundle` but the PHP namespace remains `Ajgarlag\FeatureFlagBundle\` on purpose, so code written against the upstream works here unchanged. Imports and the bundle class reference (`Ajgarlag\FeatureFlagBundle\FeatureFlagBundle::class`) stay the same.
 
 ## 🚀 Getting Started
 

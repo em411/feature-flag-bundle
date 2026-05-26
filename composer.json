@@ -7,6 +7,11 @@
     "license": "MIT",
     "authors": [
         {
+            "name": "Antonio J. García Lagar",
+            "homepage": "https://github.com/ajgarlag",
+            "role": "Original author (upstream maintainer)"
+        },
+        {
             "name": "Adrien Roches",
             "email": "adrien@roc-it.tech",
             "homepage": "https://github.com/Neirda24"
@@ -14,6 +19,11 @@
         {
             "name": "Hubert Lenoir",
             "homepage": "https://github.com/Jean-Beru"
+        },
+        {
+            "name": "em411",
+            "homepage": "https://github.com/em411",
+            "role": "Maintainer of the Symfony 4.4 / PHP 7.4 backport"
         },
         {
             "name": "Community",
@@ -44,7 +54,7 @@
     "autoload-dev": {
         "psr-4": { "Ajgarlag\\FeatureFlagBundle\\Tests\\": "tests/" }
     },
-    "minimum-stability": "dev",
+    "minimum-stability": "stable",
     "prefer-stable": true,
     "config": {
         "preferred-install": "dist",
